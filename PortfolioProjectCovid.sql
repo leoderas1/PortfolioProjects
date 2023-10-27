@@ -39,6 +39,18 @@ FROM PortfolioProjectSQL..CovidDeaths
 GROUP BY location, population
 ORDER BY world_infection_percentage desc
 
+SELECT location, SUM(CAST(new_deaths AS int)) AS TotalDeathCount
+FROM PortfolioProjectSQL..CovidDeaths
+WHERE continent is null 
+and location not in ('World', 'European Union', 'International')
+GROUP BY location
+ORDER BY TotalDeathCount desc
+
+SELECT Location, Population, date, MAX(total_cases) AS highest_infection_count, MAX((total_cases/population))*100 AS percent_population_infected
+FROM PortfolioProjectSQL..CovidDeaths
+GROUP BY Location, Population, date
+ORDER BY percent_population_infected desc
+
 --World highest death count per population
 
 SELECT location, MAX(CAST(total_deaths AS int)) AS highest_death_count, MAX((total_deaths/population))*100 AS world_death_percentage
@@ -119,3 +131,4 @@ JOIN PortfolioProjectSQL..CovidVaccinations vac
 	ON dea.location = vac.location
 	AND dea.date = vac.date
 WHERE dea.continent is not null
+
